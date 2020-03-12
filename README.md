@@ -35,10 +35,20 @@ In order to run our model, you need to download these two files. If you want to 
 
 # Run our model
 
-1. Unzip two data set into two folders.
+1. Data Size:
 
-2. Set the "data_path" in config.ini to the path that you store the data from detection_data.tar.gz. Set the "patch_file_path" in config.ini to the path that you store the data from patch_files.tar.gz. Set the "processed_data_path" to the path that you want to store the processed data for running the model.
+Please put training and testing data in different two folders. Each fold contains subfolders for each project. Also include a Buggy_lines.json file in these two folders to show which line in which file (e.g. src/test.java as file name)is buggy.
 
-3. Run "data_process.py" to process the data and get well formated data set.
+The structure could look like below:
 
-4. Run "main.py" to get the evaluation results and running time.
+Training/Testing folder:
+  |- Project 1
+  |- Project 2
+  ...
+  |- Buggy_lines.json
+
+2. Set the all required settings in config.ini. All required part marked as (FILL). And detailed explain for each option is in config.ini.
+
+3. Run "main.py" to get the evaluation results and running time.
+
+If you have any question about the code, please directly email me @ yl622@njit.edu
