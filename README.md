@@ -42,9 +42,13 @@ Please put training and testing data in different two folders. Each fold contain
 The structure could look like below:
 
 Training/Testing folder:
+
   |- Project 1
+  
   |- Project 2
+  
   ...
+  
   |- Buggy_lines.json
 
 ## 2. Config.ini:
