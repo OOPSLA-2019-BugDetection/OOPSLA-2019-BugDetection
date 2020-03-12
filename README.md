@@ -35,7 +35,7 @@ In order to run our model, you need to download these two files. If you want to 
 
 # Run our model
 
-## Data Size:
+## 1. Data Size:
 
 Please put training and testing data in different two folders. Each fold contains subfolders for each project. Also include a Buggy_lines.json file in these two folders to show which line in which file (e.g. src/test.java as file name)is buggy.
 
@@ -47,8 +47,12 @@ Training/Testing folder:
   ...
   |- Buggy_lines.json
 
-## Set the all required settings in config.ini. All required part marked as (FILL). And detailed explain for each option is in config.ini.
+## 2. Config.ini:
 
-## Run "main.py" to get the evaluation results and running time.
+Set the all required settings in config.ini. All required part marked as (FILL). And detailed explain for each option is in config.ini.
+
+## 3. Run Model
+
+Run "main.py" to get the evaluation results and running time.
 
 If you have any question about the code, please directly email me @ yl622@njit.edu
