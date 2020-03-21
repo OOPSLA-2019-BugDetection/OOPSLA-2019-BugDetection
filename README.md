@@ -23,11 +23,13 @@ detection and relatively improves over the other representations up to 206% in a
 
 # Data Set
 
+The data is available at https://zenodo.org/record/3719225 and https://zenodo.org/record/3719219
+
 Our data set include two files:
 
-1. patch_files.tar.gz: It contains the bug fix code for each bug id. The patch files are separated by project. All versions are included together in order to avoid that one bug fix can influence more than one version of code. Link: https://drive.google.com/open?id=1iD4d1WpKmGVgqADkhhFFrOUS5RM53nbg
+1. patch_files.tar.gz: It contains the bug fix code for each bug id. The patch files are separated by project. All versions are included together in order to avoid that one bug fix can influence more than one version of code. Download: `curl -LO "https://zenodo.org/record/3719219/files/patch_files.tar.gz?download=1"`
 
-2. detection_data.tar.gz: It contains all code for each version and a bug summary file for each version. The data is separated by project, and in each project, code is separated by version with different folder and a summary file. The data in the summary file which is the picke file is a 2-dimensional array with shape [N, 6], N is the number of methods with bug, 6 is the number of info one method carries with format [method name, class name or 'NaN' if no class, soure code, bug id, java file name path, affect version id]. Link: https://drive.google.com/open?id=1LjsypaXbbmhIB05LYdR-sGmnmqZQdvOy
+2. detection_data.tar.gz: It contains all code for each version and a bug summary file for each version. The data is separated by project, and in each project, code is separated by version with different folder and a summary file. The data in the summary file which is the picke file is a 2-dimensional array with shape [N, 6], N is the number of methods with bug, 6 is the number of info one method carries with format [method name, class name or 'NaN' if no class, soure code, bug id, java file name path, affect version id].
 
 In order to run our model, you need to download these two files. If you want to run our model in different data set, you need to format your data set into the same format as our data set. Also, you need to fix the versions.json file. In that file, it stores the information about the projects and versions of these projects.
 
