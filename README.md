@@ -44,15 +44,11 @@ If you want to run our model on your own dataset, you can prepare your data in t
 
 3. In order to reduce the influence of unrelated information, you would better remove all comments from the code. (Our model can ignore the comment itself, but you can also do it on the dataset to avoid possible problems.)
 
-4. Inside of the training data folder and testing data folder, you need to have one JSON file in each of them to point out which line in which file is buggy in order to make the model can learn and test based on your data. These two files you need to name them into Buggy_lines.json. For each of them, the structure should like this:
-
-  {"File_path_1": [1, 5,..., n], "File_path_2": [3, 6,..., m],...}
-
-  The "File_path" is the relative path of your file, for example:
-
-  project_1/src/test.java (The absolute path of it could be like "/data/training/project_1/src/test.java")
-
-  And the buggy line numbers should be in a list.
+4. Inside of the training data folder and testing data folder, you need to have one JSON file in each of them to point out which line in which file is buggy in order to make the model can learn and test based on your data. These two files you need to name them into Buggy_lines.json. For each of them, the structure should like this: 
+{"File_path_1": [1, 5,..., n], "File_path_2": [3, 6,..., m],...}. 
+The "File_path" is the relative path of your file, for example: 
+project_1/src/test.java (The absolute path of it could be like "/data/training/project_1/src/test.java"). 
+And the buggy line numbers should be in a list.
 
 ----------
 
