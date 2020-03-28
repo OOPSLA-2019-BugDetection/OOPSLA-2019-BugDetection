@@ -19,38 +19,21 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 config = tf.ConfigProto()
 config.gpu_options.allow_growth=True
 session = tf.Session(config=config)
-KTF.tensorflow_backend.set_session(session)
-
-
-def adding_attention(input_tensor, attention_vec, input_length, attention_dim):
-    ten_remove = Lambda(lambda x: x[:, :input_length-1])(input_tensor)
-    ten_attention = Reshape((1, attention_dim))(attention_vec)
-    new_tensor = Concatenate(axis=1)([ten_remove, ten_attention])
-    return new_tensor
+KTF.set_session(session)
 
 
 def local_context_learning(input_length, input_dim, output_dim, hidden_dim, filters_num, kernel_val, learning_rate, drop_rate):
     basic_input = Input(shape=(input_length, input_dim))
     label_input = Input(shape=(1,))
-    weighted_input = adding_weight()(basic_input)
-
-    def true_process():
-        return weighted_input
-
-    def false_process():
-        return basic_input
-
-    actual_input = Lambda(lambda x: tf.cond(x > tf.constant(value=0.5), true_fn=true_process(), false_fn=false_process()))(label_input)
-    rnn_output = GRU(hidden_dim, return_sequences=True)(actual_input)
+    weighted_input = adding_weight(input_length, input_dim)([basic_input, label_input])
+    rnn_output = GRU(units=hidden_dim, return_sequences=True)(weighted_input)
     rnn_att = SeqSelfAttention(attention_activation='sigmoid')(rnn_output)
-    cnn_output = Conv1D(filters=filters_num, kernel_size=kernel_val, padding="same")(actual_input)
+    cnn_output = Conv1D(filters=filters_num, kernel_size=kernel_val, padding="same")(weighted_input)
     cnn_output_reformat = Dense(hidden_dim)(cnn_output)
     cnn_att = SeqSelfAttention(attention_activation='sigmoid')(cnn_output_reformat)
-    fixed_rnn_output = adding_attention(rnn_output, rnn_att, input_length, hidden_dim)
-    fixed_cnn_output = adding_attention(cnn_output_reformat, cnn_att, input_length, hidden_dim)
-    new_value = Concatenate(axis=1)([fixed_rnn_output, fixed_cnn_output])
-    new_keys = ones_like(new_value)
-    new_result = MultiHeadAttention(head_num=2)([actual_input, new_keys, new_value])
+    new_value = Concatenate(axis=1)([rnn_att, cnn_att])
+    new_keys = Lambda(lambda x: ones_like(x))(new_value)
+    new_result = MultiHeadAttention(head_num=2)([weighted_input, new_keys, new_value])
     result = Flatten()(new_result)
     result_fix = Dropout(rate=drop_rate)(result)
     output = Dense(output_dim)(result_fix)
@@ -70,16 +53,16 @@ def getting_data(file_path, print_text):
 
 cfg = ConfigParser()
 cfg.read('config.ini')
-input_l = cfg.get('localcontext', 'input_length')
-input_d = cfg.get('localcontext', 'input_dim')
-output_d = cfg.get('localcontext', 'output_dim')
-hidden_d = cfg.get('localcontext', 'hidden_dim')
-filters_n = cfg.get('localcontext', 'filters_number')
-kernel_v = cfg.get('localcontext', 'kernel_value')
-batch_size_num = cfg.get('localcontext', 'batch_size_num')
-epoch_num = cfg.get('localcontext', 'epoch_num')
-learning_r = cfg.get('localcontext', 'learning_rate')
-drop_r = cfg.get('localcontext', 'dropout_rate')
+input_l = int(cfg.get('localcontext', 'input_length'))
+input_d = int(cfg.get('localcontext', 'input_dim'))
+output_d = int(cfg.get('localcontext', 'output_dim'))
+hidden_d = int(cfg.get('localcontext', 'hidden_dim'))
+filters_n = int(cfg.get('localcontext', 'filters_number'))
+kernel_v = int(cfg.get('localcontext', 'kernel_value'))
+batch_size_num = int(cfg.get('localcontext', 'batch_size_num'))
+epoch_num = int(cfg.get('localcontext', 'epoch_num'))
+learning_r = float(cfg.get('localcontext', 'learning_rate'))
+drop_r = float(cfg.get('localcontext', 'dropout_rate'))
 training_input_data = cfg.get('localcontext', 't_input_data')
 training_label_data = cfg.get('localcontext', 't_label_data')
 training_output_data = cfg.get('localcontext', 't_output_data')
@@ -97,7 +80,7 @@ print("Done")
 input_data = getting_data(testing_input_data, "Input")
 label_data = getting_data(testing_label_data, "Label")
 print("Predicting Results for Testing...")
-local_context_result = model_local.predict([testing_input_data, testing_label_data])
+local_context_result = model_local.predict([input_data, label_data])
 final_results = np.array(local_context_result)
-np.save(output_file)
+np.save(output_file, final_results)
 print("Done")
